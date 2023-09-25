@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Internet Media Player [v3] (by IMP)</title>
+    <title>Video Player [v2] (by IMP)</title>
     <style>
         /* Style the body to fill the viewport */
         body {
@@ -36,7 +36,7 @@
     </style>
 </head>
 <body>
-    <video id="videoPlayer" controls autoplay muted playsinline>
+    <video id="videoPlayer" controls autoplay playsinline>
         Your browser does not support the video tag.
     </video>
 
@@ -45,28 +45,11 @@
             // Get the URL parameter named 'video' (e.g., ?video=https://example.com/video.m3u8)
             const urlParams = new URLSearchParams(window.location.search);
             const videoUrl = urlParams.get('video');
-            const videoPlayer = document.getElementById('videoPlayer');
 
             if (videoUrl) {
-                // Check if the browser supports MediaSource extensions (MSE)
-                if (window.MediaSource) {
-                    const mediaSource = new MediaSource();
-                    videoPlayer.src = URL.createObjectURL(mediaSource);
-
-                    mediaSource.addEventListener('sourceopen', function () {
-                        const sourceBuffer = mediaSource.addSourceBuffer('video/mp4');
-                        fetch(videoUrl)
-                            .then((response) => response.arrayBuffer())
-                            .then((data) => {
-                                sourceBuffer.appendBuffer(data);
-                                videoPlayer.play();
-                            });
-                    });
-                } else {
-                    // If MSE is not supported, use the default video source
-                    videoPlayer.src = videoUrl;
-                    videoPlayer.play();
-                }
+                // Set the video source to the URL parameter value
+                const videoPlayer = document.getElementById('videoPlayer');
+                videoPlayer.src = videoUrl;
             }
         });
     </script>
