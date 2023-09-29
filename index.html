@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>▶ Video Player [v4.8]</title>
+    <title>VP [v4.9] (by IMP)</title>
     <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
     <style>
         /* Style the body to fill the viewport */
@@ -55,6 +55,10 @@
                     // Set the video source to the URL parameter value
                     const videoPlayer = document.getElementById('videoPlayer');
                     videoPlayer.src = videoUrl;
+                    videoPlayer.addEventListener('loadedmetadata', function () {
+                        // Start playing the video after metadata is loaded
+                        videoPlayer.play();
+                    });
                 }
             }
         });
