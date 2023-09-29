@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>VP [v4.6] (by IMP)</title>
+    <title>VP [v4.7] (by IMP)</title>
     <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
     <style>
         /* Style the body to fill the viewport */
@@ -63,31 +63,22 @@
         // Function to play HLS stream
         function playHLSStream(url) {
             const videoPlayer = document.getElementById('videoPlayer');
-            videoPlayer.innerHTML = ''; // Clear any existing video sources
-
-            const video = document.createElement('video');
-            video.controls = true;
-            video.autoplay = true;
-            video.style.maxWidth = '100%';
-            video.style.maxHeight = '100%';
 
             if (Hls.isSupported()) {
                 const hls = new Hls();
                 hls.loadSource(url);
-                hls.attachMedia(video);
+                hls.attachMedia(videoPlayer);
                 hls.on(Hls.Events.MANIFEST_PARSED, function () {
                     // Start playing the video after manifest is parsed
-                    video.play();
+                    videoPlayer.play();
                 });
-            } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
-                video.src = url;
-                video.addEventListener('loadedmetadata', function () {
+            } else if (videoPlayer.canPlayType('application/vnd.apple.mpegurl')) {
+                videoPlayer.src = url;
+                videoPlayer.addEventListener('loadedmetadata', function () {
                     // Start playing the video after metadata is loaded
-                    video.play();
+                    videoPlayer.play();
                 });
             }
-
-            videoPlayer.appendChild(video);
         }
     </script>
 </body>
