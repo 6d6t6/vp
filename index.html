@@ -13,7 +13,7 @@
             align-items: center;
             height: 100vh;
             margin: 0;
-            background-color: #000;
+            background-color: #333;
         }
 
         /* Style the video container */
@@ -31,7 +31,8 @@
             width: 100%;
             height: 100%;
             background-color: #000;
-            border: none;
+            border: 2px solid #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
         }
     </style>
 </head>
@@ -47,41 +48,38 @@
             const videoUrl = urlParams.get('video');
 
             if (videoUrl) {
-                // Check if the URL is an HLS stream (ends with .m3u8)
-                if (videoUrl.endsWith('.m3u8')) {
-                    // Play HLS stream
-                    playHLSStream(videoUrl);
-                } else {
-                    // Set the video source to the URL parameter value
-                    const videoPlayer = document.getElementById('videoPlayer');
-                    videoPlayer.src = videoUrl;
-                    videoPlayer.addEventListener('loadedmetadata', function () {
-                        // Start playing the video after metadata is loaded
-                        videoPlayer.play();
-                    });
-                }
+                createAndPlayVideo(videoUrl);
             }
         });
 
-        // Function to play HLS stream
-        function playHLSStream(url) {
+        // Function to create and play a video element
+        function createAndPlayVideo(url) {
             const videoPlayer = document.getElementById('videoPlayer');
+            videoPlayer.innerHTML = ''; // Clear any existing video sources
 
-            if (Hls.isSupported()) {
+            const video = document.createElement('video');
+            video.controls = true;
+            video.autoplay = true;
+            video.style.maxWidth = '100%';
+            video.style.maxHeight = '100%';
+
+            if (Hls.isSupported() && url.endsWith('.m3u8')) {
                 const hls = new Hls();
                 hls.loadSource(url);
-                hls.attachMedia(videoPlayer);
+                hls.attachMedia(video);
                 hls.on(Hls.Events.MANIFEST_PARSED, function () {
                     // Start playing the video after manifest is parsed
-                    videoPlayer.play();
+                    video.play();
                 });
-            } else if (videoPlayer.canPlayType('application/vnd.apple.mpegurl')) {
-                videoPlayer.src = url;
-                videoPlayer.addEventListener('loadedmetadata', function () {
+            } else {
+                video.src = url;
+                video.addEventListener('loadedmetadata', function () {
                     // Start playing the video after metadata is loaded
-                    videoPlayer.play();
+                    video.play();
                 });
             }
+
+            videoPlayer.appendChild(video);
         }
     </script>
 </body>
