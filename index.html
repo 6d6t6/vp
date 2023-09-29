@@ -75,8 +75,16 @@
                 const hls = new Hls();
                 hls.loadSource(url);
                 hls.attachMedia(video);
+                hls.on(Hls.Events.MANIFEST_PARSED, function () {
+                    // Start playing the video after manifest is parsed
+                    video.play();
+                });
             } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
                 video.src = url;
+                video.addEventListener('loadedmetadata', function () {
+                    // Start playing the video after metadata is loaded
+                    video.play();
+                });
             }
 
             videoPlayer.appendChild(video);
