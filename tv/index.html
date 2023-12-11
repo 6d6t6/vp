@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>VP-TV-AE [v1] (by IMP)</title>
+    <title>VP-TV-AE [v2] (by IMP)</title>
+    <link href="https://fonts.googleapis.com/css2?family=Dela+Gothic+One&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
     <style>
         /* Style the body to fill the viewport */
@@ -15,6 +16,7 @@
             margin: 0;
             background-color: #000;
             position: relative;
+            font-family: 'Dela Gothic One', cursive; /* Set the font-family to Dela Gothic */
         }
 
         /* Style the video container */
@@ -95,8 +97,8 @@
             const name = urlParams.get('name') || 'No info available';
             const channelId = urlParams.get('id') || 'No info available';
 
-            title.innerText = `Name: ${decodeURIComponent(name)}`;
-            id.innerText = `ID: ${channelId}`;
+            title.innerText = `${decodeURIComponent(name)}`;
+            id.innerText = `${channelId}`;
 
             infoShade.style.opacity = 1;
 
