@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VP-TV-AE [v1] (by IMP)</title>
+    <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+    <style>
+        /* Style the body to fill the viewport */
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #000;
+            position: relative;
+        }
+
+        /* Style the video container */
+        body::before {
+            content: "";
+            padding-top: 56.25%; /* 16:9 aspect ratio (9 / 16 * 100) */
+            display: block;
+        }
+
+        /* Style the video element */
+        video {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #000;
+            border: none;
+        }
+
+        /* Style the info-shade overlay */
+        #infoShade {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to bottom, rgba(0, 0, 0, 0.7) 0%, rgba(0, 0, 0, 0) 100%);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: #fff;
+            font-size: 1.5em;
+            text-align: center;
+            opacity: 0;
+            transition: opacity 1s ease-in-out;
+        }
+    </style>
+</head>
+<body>
+    <video id="videoPlayer" controls autoplay playsinline>
+        Your browser does not support the video tag.
+    </video>
+
+    <!-- Info-shade overlay -->
+    <div id="infoShade">
+        <div id="title"></div>
+        <div id="id"></div>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const urlParams = new URLSearchParams(window.location.search);
+            const videoUrl = urlParams.get('video');
+
+            // Display info-shade overlay
+            displayInfoShade(urlParams);
+            
+            if (videoUrl) {
+                if (videoUrl.endsWith('.m3u8')) {
+                    playHLSStream(videoUrl);
+                } else {
+                    const videoPlayer = document.getElementById('videoPlayer');
+                    videoPlayer.src = videoUrl;
+                    videoPlayer.addEventListener('loadedmetadata', function () {
+                        videoPlayer.play();
+                    });
+                }
+            }
+        });
+
+        function displayInfoShade(urlParams) {
+            const infoShade = document.getElementById('infoShade');
+            const title = document.getElementById('title');
+            const id = document.getElementById('id');
+
+            const name = urlParams.get('name') || 'No info available';
+            const channelId = urlParams.get('id') || 'No info available';
+
+            title.innerText = `Name: ${decodeURIComponent(name)}`;
+            id.innerText = `ID: ${channelId}`;
+
+            infoShade.style.opacity = 1;
+
+            // Hide the info-shade after 7 seconds
+            setTimeout(() => {
+                infoShade.style.opacity = 0;
+            }, 7000);
+        }
+
+        function playHLSStream(url) {
+            const videoPlayer = document.getElementById('videoPlayer');
+
+            if (Hls.isSupported()) {
+                const hls = new Hls();
+                hls.loadSource(url);
+                hls.attachMedia(videoPlayer);
+                hls.on(Hls.Events.MANIFEST_PARSED, function () {
+                    videoPlayer.play();
+                });
+            } else if (videoPlayer.canPlayType('application/vnd.apple.mpegurl')) {
+                videoPlayer.src = url;
+                videoPlayer.addEventListener('loadedmetadata', function () {
+                    videoPlayer.play();
+                });
+            }
+        }
+    </script>
+</body>
+</html>
