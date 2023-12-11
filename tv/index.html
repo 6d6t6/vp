@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>VP-TV-AE [v3] (by IMP)</title>
-    <link href="https://fonts.googleapis.com/css2?family=Dela+Gothic+One&display=swap" rel="stylesheet">
+    <title>VP-TV-AE [v4] (by IMP)</title>
+    <link href="https://fonts.googleapis.com/css2?family=Rethink+Sans&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
     <style>
         /* Style the body to fill the viewport */
@@ -16,7 +16,7 @@
             margin: 0;
             background-color: #000;
             position: relative;
-            font-family: 'Dela Gothic One', cursive; /* Set the font-family to Dela Gothic */
+            font-family: 'Rethink Sans', monospace; /* Set the font-family to Dela Gothic */
         }
 
         /* Style the video container */
@@ -40,14 +40,14 @@
         /* Style the info-shade overlay */
         #infoShade {
             position: absolute;
-            top: 0;
+            top: 10%; /* Adjust the top positioning */
             left: 0;
             width: 100%;
-            height: 100%;
-            background: linear-gradient(to bottom, rgba(0, 0, 0, 0.7) 0%, rgba(0, 0, 0, 0) 100%);
+            height: 90%; /* Adjust the height */
+            background: linear-gradient(to bottom, rgba(0, 0, 0, 0.9) 0%, rgba(0, 0, 0, 0) 100%);
             display: flex;
             flex-direction: column;
-            justify-content: center;
+            justify-content: flex-start; /* Align items to the top */
             align-items: center;
             color: #fff;
             font-size: 1.5em;
@@ -56,7 +56,7 @@
             transition: opacity 1s ease-in-out;
         }
         #title {
-            font-size: 2.5em!important;
+            font-size: 2.5em;
     </style>
 </head>
 <body>
