@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>VP-SQ [v4.9-1] (by IMP)</title>
-    <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+    <title>VP-SQ [v4.9-2] (by IMP)</title>
+    <script></script>
     <style>
         /* Style the body to fill the viewport */
         body {
@@ -84,7 +84,7 @@
                 const hls = new Hls();
                 hls.loadSource(url);
                 hls.attachMedia(videoPlayer);
-                hls.on(Hls.Events.MANIFEST_PARSED, function () {
+                hls.on(Hls.Events.MANIFEST_PARSED, function (event, data) {
                     // Start playing the video after manifest is parsed
                     videoPlayer.play();
                 });
@@ -109,7 +109,9 @@
                 currentIndex = (currentIndex + 1) % playlistLength;
 
                 // Listen for video end and play the next one
-                videoPlayer.addEventListener('ended', playNextVideo);
+                videoPlayer.addEventListener('ended', function () {
+                    playNextVideo();
+                });
             }
 
             playNextVideo(); // Start playing the first video
