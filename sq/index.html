@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VP-SQ [v4.9-1] (by IMP)</title>
+    <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+    <style>
+        /* Style the body to fill the viewport */
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #000;
+        }
+
+        /* Style the video container */
+        body::before {
+            content: "";
+            padding-top: 56.25%; /* 16:9 aspect ratio (9 / 16 * 100) */
+            display: block;
+        }
+
+        /* Style the video element */
+        video {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #000;
+            border: none;
+        }
+    </style>
+</head>
+<body>
+    <video id="videoPlayer" controls autoplay playsinline>
+        Your browser does not support the video tag.
+    </video>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            // Get the URL parameter named 'video' or 'playlist'
+            const urlParams = new URLSearchParams(window.location.search);
+            const videoUrl = urlParams.get('video');
+            const playlistUrl = urlParams.get('playlist');
+            const startOffset = parseInt(urlParams.get('start')) || 1;
+
+            if (playlistUrl) {
+                // Load and play videos from the playlist
+                fetch(playlistUrl)
+                    .then(response => response.json()) // Assuming the playlist is in JSON format
+                    .then(playlist => playPlaylist(playlist.videos, startOffset));
+            } else if (videoUrl) {
+                // Play single video
+                playVideo(videoUrl);
+            }
+        });
+
+        // Function to play single video
+        function playVideo(url) {
+            const videoPlayer = document.getElementById('videoPlayer');
+
+            if (url.endsWith('.m3u8')) {
+                // Play HLS stream
+                playHLSStream(url);
+            } else {
+                // Set the video source to the URL parameter value
+                videoPlayer.src = url;
+                videoPlayer.addEventListener('loadedmetadata', function () {
+                    // Start playing the video after metadata is loaded
+                    videoPlayer.play();
+                });
+            }
+        }
+
+        // Function to play HLS stream
+        function playHLSStream(url) {
+            const videoPlayer = document.getElementById('videoPlayer');
+
+            if (Hls.isSupported()) {
+                const hls = new Hls();
+                hls.loadSource(url);
+                hls.attachMedia(videoPlayer);
+                hls.on(Hls.Events.MANIFEST_PARSED, function () {
+                    // Start playing the video after manifest is parsed
+                    videoPlayer.play();
+                });
+            } else if (videoPlayer.canPlayType('application/vnd.apple.mpegurl')) {
+                videoPlayer.src = url;
+                videoPlayer.addEventListener('loadedmetadata', function () {
+                    // Start playing the video after metadata is loaded
+                    videoPlayer.play();
+                });
+            }
+        }
+
+        // Function to play videos from the playlist
+        function playPlaylist(playlist, startOffset) {
+            const videoPlayer = document.getElementById('videoPlayer');
+            const playlistLength = playlist.length;
+            let currentIndex = (startOffset % playlistLength + playlistLength) % playlistLength;
+
+            function playNextVideo() {
+                const currentVideo = playlist[currentIndex];
+                playVideo(currentVideo);
+                currentIndex = (currentIndex + 1) % playlistLength;
+
+                // Listen for video end and play the next one
+                videoPlayer.addEventListener('ended', playNextVideo);
+            }
+
+            playNextVideo(); // Start playing the first video
+        }
+    </script>
+</body>
+</html>
