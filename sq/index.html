@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>VP-SQ [v4.9-2] (by IMP)</title>
-    <script></script>
+    <title>VP-SQ [v4.9-3] (by IMP)</title>
+    <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
     <style>
         /* Style the body to fill the viewport */
         body {
@@ -52,7 +52,13 @@
                 // Load and play videos from the playlist
                 fetch(playlistUrl)
                     .then(response => response.json()) // Assuming the playlist is in JSON format
-                    .then(playlist => playPlaylist(playlist.videos, startOffset));
+                    .then(playlist => {
+                        // Save the playlist to localStorage
+                        localStorage.setItem('playlist', JSON.stringify(playlist));
+
+                        // Play the playlist
+                        playPlaylist(playlist.videos, startOffset);
+                    });
             } else if (videoUrl) {
                 // Play single video
                 playVideo(videoUrl);
@@ -84,7 +90,7 @@
                 const hls = new Hls();
                 hls.loadSource(url);
                 hls.attachMedia(videoPlayer);
-                hls.on(Hls.Events.MANIFEST_PARSED, function (event, data) {
+                hls.on(Hls.Events.MANIFEST_PARSED, function () {
                     // Start playing the video after manifest is parsed
                     videoPlayer.play();
                 });
